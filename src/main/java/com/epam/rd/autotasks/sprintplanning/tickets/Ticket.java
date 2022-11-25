@@ -29,9 +29,10 @@ public class Ticket {
     }
 
     public void complete() {
-        if (!complete) {
-            complete = true;
+        if (complete) {
+            return;
         }
+        complete = true;
     }
 
     public int getEstimate() {

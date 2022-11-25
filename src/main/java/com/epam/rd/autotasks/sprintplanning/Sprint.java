@@ -21,33 +21,36 @@ public class Sprint {
 
 
     public boolean addUserStory(UserStory userStory) {
-        if (userStory == null) return false;
+        if (userStory == null) {
+            return false;
+        }
         countLimit++;
-        if (countLimit > ticketsLimit) {
-            countLimit--;
-            return false;
-        }
-        countCapacity += userStory.getEstimate();
-        if (countCapacity > capacity) {
-            countCapacity -= userStory.getEstimate();
-            return false;
-        }
-        if ((!userStory.isCompleted())) {
-            if (userStory.getDependencies().length != 0) {
-                if (isDependency(userStory)) {
-                    sprint[index++] = userStory;
-                    return true;
-                } else {
-                    countLimit--;
-                    countCapacity -= userStory.getEstimate();
-                    return false;
-                }
+
+        if (countLimit <= ticketsLimit) {
+            countCapacity += userStory.getEstimate();
+            if (countCapacity > capacity) {
+                countCapacity -= userStory.getEstimate();
+                return false;
             }
-            sprint[index++] = userStory;
-            return true;
+            if ((!userStory.isCompleted())) {
+                if (userStory.getDependencies().length != 0) {
+                    if (isDependency(userStory)) {
+                        sprint[index++] = userStory;
+                        return true;
+                    } else {
+                        countLimit--;
+                        countCapacity -= userStory.getEstimate();
+                        return false;
+                    }
+                }
+                sprint[index++] = userStory;
+                return true;
+            }
+            countLimit--;
+            countCapacity -= userStory.getEstimate();
+        } else {
+            countLimit--;
         }
-        countLimit--;
-        countCapacity -= userStory.getEstimate();
         return false;
     }
 
@@ -65,18 +68,18 @@ public class Sprint {
     public boolean addBug(Bug bugReport) {
         if (bugReport == null) return false;
         countLimit++;
-        if (countLimit > ticketsLimit) {
+        if (countLimit <= ticketsLimit) {
+            countCapacity += bugReport.getEstimate();
+            if (countCapacity > capacity) {
+                countCapacity -= bugReport.getEstimate();
+                return false;
+            }
+            if (!bugReport.isCompleted()) {
+                sprint[index++] = bugReport;
+                return true;
+            }
+        } else {
             countLimit--;
-            return false;
-        }
-        countCapacity += bugReport.getEstimate();
-        if (countCapacity > capacity) {
-            countCapacity -= bugReport.getEstimate();
-            return false;
-        }
-        if (!bugReport.isCompleted()) {
-            sprint[index++] = bugReport;
-            return true;
         }
         return false;
     }

@@ -3,9 +3,10 @@ public class Bug extends Ticket {
     UserStory userStory;
 
     public static Bug createBug(int id, String name, int estimate, UserStory userStory) {
-        if ((userStory == null) || (!userStory.isCompleted())) return null;
-        else {
+        if ((userStory != null) && (userStory.isCompleted())) {
             return new Bug(id, name, estimate, userStory);
+        } else {
+            return null;
         }
     }
 
